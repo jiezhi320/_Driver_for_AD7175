@@ -22,6 +22,7 @@ int main(void)
     blink();
 	while(1)
 	{
+        blink();
 //        key_scan();
 	}
 
