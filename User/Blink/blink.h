@@ -4,13 +4,16 @@
 #include "stm32f10x_conf.h"
 #include "delay.h"
 #define LED0		GPIOB
-#define LED1 		GPIOE
+#define LED1 		GPIOB
 
-#define SET_LED0()	GPIO_ResetBits(LED0, GPIO_Pin_5);
-#define CLR_LED0() 	GPIO_SetBits(LED0, GPIO_Pin_5);
+#define LED0_Pin    GPIO_Pin_0
+#define LED1_Pin    GPIO_Pin_1
 
-#define SET_LED1()	GPIO_ResetBits(LED1, GPIO_Pin_5);
-#define CLR_LED1() 	GPIO_SetBits(LED1, GPIO_Pin_5);
+#define SET_LED0()	GPIO_ResetBits(LED0, LED0_Pin);
+#define CLR_LED0() 	GPIO_SetBits(LED0, LED0_Pin);
+
+#define SET_LED1()	GPIO_ResetBits(LED1, LED1_Pin);
+#define CLR_LED1() 	GPIO_SetBits(LED1, LED1_Pin);
 
 void GPIO_Config(void);
 void blink(void);

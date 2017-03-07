@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\User;..\User\AD9834;..\User\Blink;..\User\delay;..\User\system_configuration;..\User\usart;..\Libraries\CMSIS\CoreSupport;..\Libraries\CMSIS\DeviceSupport;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\User\key;..\User\i2c</IncludePath>
+              <IncludePath>..\User;..\User\Blink;..\User\delay;..\User\system_configuration;..\User\usart;..\Libraries\CMSIS\CoreSupport;..\Libraries\CMSIS\DeviceSupport;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\User\key;..\User\i2c;..\User\spi</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -378,16 +378,6 @@
       <Groups>
         <Group>
           <GroupName>Source Group 1</GroupName>
-        </Group>
-        <Group>
-          <GroupName>AD9834</GroupName>
-          <Files>
-            <File>
-              <FileName>AD9834.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\AD9834\AD9834.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>blink</GroupName>
@@ -596,6 +586,16 @@
               <FileName>i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\i2c\i2c.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>SPI</GroupName>
+          <Files>
+            <File>
+              <FileName>spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\spi\spi.c</FilePath>
             </File>
           </Files>
         </Group>

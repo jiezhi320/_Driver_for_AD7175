@@ -17,12 +17,12 @@ int main(void)
     //ExitKeyConfig();
     //Usart_Init();
     key_Init();
-    AD9834_Init();
-    AD9834_OutputSet(FreqRegister_0, 1000, 0);
+//    AD9834_Init();
+//    AD9834_OutputSet(FreqRegister_0, 1000, 0);
     blink();
 	while(1)
 	{
-        key_scan();
+//        key_scan();
 	}
 
 
