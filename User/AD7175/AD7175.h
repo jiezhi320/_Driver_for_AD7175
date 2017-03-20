@@ -5,6 +5,7 @@
 /***************************** Include Files *********************************/
 #include <stdint.h>
 #include "AD7175_regs.h"
+#include "delay.h"
 
 /******************* AD7175 Constants ****************************************/
 #define AD7175_CRC_POLYNOMIAL 0x07 // x^8 + x^2 + x +1 (MSB first)
@@ -26,6 +27,11 @@ int32_t AD7175_ReadData(int32_t pData);
 
 #define BIPOLAR_POLARITY                0x01
 #define UNIPOLARITY_POLARITY            0x02
-void AD7175_SetChannels(void);
+
+void AD7175_SetChannels_Enable(uint8_t channels);
+void AD7175_SetChannels_Disable(uint8_t channels);
+
+int32_t AD7175_SetChannels_DefaultMode(void);
+
 void PolaritySet(uint8_t polarity);
 #endif // __AD7175_H__

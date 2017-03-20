@@ -96,11 +96,15 @@ unsigned char SPI_Write(unsigned char slaveDeviceId,				/*	子机编号					*/
                         unsigned char* data,								/*	待写入数组地址		*/
                         unsigned char bytesNumber)					/*	待写入数据字节数	*/
 {
-		u8 i=0;
-		for(i=0;i<bytesNumber;i++)
-		{
-				SPI_Send_One_Byte(data[i]);
-		}
+	SPI_CS_0();
+	Delayus(100);
+	u8 i=0;
+	for(i=0;i<bytesNumber;i++)
+	{
+		SPI_Send_One_Byte(data[i]);
+	}
+	SPI_CS_1();
+	Delayus(100);
 	return 1;
 }
 
@@ -115,15 +119,16 @@ unsigned char SPI_Read(unsigned char slaveDeviceId,					/*	子机编号				*/
                        unsigned char* data,									/*	读到的数据缓冲区*/
                        unsigned char bytesNumber)						/*	要读取的字节个数*/
 {
-	u8 i=0;
-		//SPI_Send_One_Byte(slaveDeviceId);					//发送命令字节		
+	SPI_CS_0();
+	Delayus(100);
+	u8 i=0;	
 		SPI_Send_One_Byte(data[0]);					//发送命令字节		
-//	Delayus(100);
+		Delayus(100);								//2017-03-20
 		for(i=1;i<bytesNumber;i++)
-		//for(i=0;i<bytesNumber;i++)
 		{
-			//	SPI_Send_One_Byte(0xff);
 				data[i]=SPI_Read_One_Byte();		//读取数据字节
 		}
+	SPI_CS_1();
+	Delayus(100);
 	return 1;
 }

@@ -13,13 +13,13 @@ void SPI_By_IO_GPIO_Init(void)
     GPIO_InitStructure.GPIO_Pin = SPI_CS_GPIO_Pin;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
     GPIO_Init(SPI_CS_GPIO_Port, &GPIO_InitStructure);
-    SPI_CS_1();											//cs≥ı ºµÁ∆ΩŒ™∏ﬂ
+    SPI_CS_1();											//csÂàùÂßãÁîµÂπ≥‰∏∫È´ò
 
     //SPI_CLK	
     GPIO_InitStructure.GPIO_Pin = SPI_CLK_GPIO_Pin;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP ;
     GPIO_Init(SPI_CLK_GPIO_Port, &GPIO_InitStructure);
-    SPI_CLK_1();										//CLK≥ı ºµÁ∆ΩŒ™µÕ
+    SPI_CLK_1();										//CLKÂàùÂßãÁîµÂπ≥‰∏∫‰Ωé
 
     //SPI_MISO	
     GPIO_InitStructure.GPIO_Pin = SPI_MISO_GPIO_Pin;
@@ -30,13 +30,13 @@ void SPI_By_IO_GPIO_Init(void)
     GPIO_InitStructure.GPIO_Pin = SPI_MOSI_GPIO_Pin;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP ;
     GPIO_Init(SPI_MOSI_GPIO_Port, &GPIO_InitStructure);
-    SPI_MOSI_1();									//MOSI≥ı ºµÁ∆ΩŒ™∏ﬂ
+    SPI_MOSI_1();									//MOSIÂàùÂßãÁîµÂπ≥‰∏∫È´ò
 		
 		//AD_SYNC	
 //    GPIO_InitStructure.GPIO_Pin = AD7175_SYNC_Pin;
 //    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 //    GPIO_Init(AD7175_SYNC_Port, &GPIO_InitStructure);
-//		//AD_SYNC_0();									//SYNCµÕµÁ∆Ω≤ª∆Ù∂Ø–¬µƒ◊™ªª
+//		//AD_SYNC_0();									
 //		AD_SYNC_1();		
 }
 void Reset64CLK(void)
@@ -44,85 +44,59 @@ void Reset64CLK(void)
 		u8 i=0;
 		for(i=0;i<65;i++)
 	{
-		SPI_CLK_0();					//≥ı º◊¥Ã¨ ±÷”Œ™∏ﬂµÁ∆Ω
+		SPI_CLK_0();					
 		SPI_CLK_Delay();
-		SPI_CLK_1();					//≥ı º◊¥Ã¨ ±÷”Œ™∏ﬂµÁ∆Ω
+		SPI_CLK_1();					
 		SPI_CLK_Delay();
 	}
 }
 void SPI_Send_One_Byte(u8 data)
 {		u8 i=0;
-    SPI_CS_0();
+    //SPI_CS_0();
     SPI_CLK_Delay();
 		for(i=0;i<8;i++)
 		{
-			SPI_CLK_1();					//≥ı º◊¥Ã¨ ±÷”Œ™∏ﬂµÁ∆Ω
+			SPI_CLK_1();					
 			SPI_CLK_Delay();
 			
-			SPI_CLK_0();					//CLKœ¬Ωµ—ÿ£¨ ˝æ›œﬂ¬∑ø…∏ƒ±‰◊¥Ã¨
+			SPI_CLK_0();					
 			if( data & 0x80 )			//MSB_First
 				{	SPI_MOSI_1();}
 			else {	SPI_MOSI_0();}
 			SPI_CLK_Delay();
 
-			SPI_CLK_1();					//…œ…˝—ÿ£¨ ˝æ›¥´ ‰∏¯¥”ª˙
-			data=data<<1;					//¥˝∑¢ÀÕ ˝æ›◊Û“∆£¨“‘∑¢ÀÕœ¬“ªŒª ˝æ›
+			SPI_CLK_1();					
+			data=data<<1;					
 		}
-    SPI_CLK_Delay();			//“ª∏ˆ◊÷Ω⁄ ˝æ›∑¢ÀÕÕÍ±œ£¨◊ˆ—” ±
-    SPI_CS_0();
-    SPI_CLK_Delay();
+    SPI_CLK_Delay();			
+    //SPI_CS_1();
 }
-//u8 SPI_Read_One_Byte(void)
-//{
-//		u8 i=0;
-//		u8 dat=0;
-//		SPI_CLK_1();	
-//		SPI_CLK_Delay();
-//	
-//		for(i=0;i<8;i++)
-//		{
-//			SPI_CLK_0();
-//			dat=dat<<1;						// ˝æ›ª∫≥Â±‰¡ø◊Û“∆£¨“‘◊º±∏Ω” ‹œ¬“ªbit ˝æ›
-//							//≥ı º◊¥Ã¨æ˘Œ™∏ﬂµÁ∆Ω
-//			
-//			
-//								//CLKœ¬Ωµ—ÿ£¨¥”ª˙ø…“‘∏ƒ±‰ ˝æ›œﬂ¬∑µÁ∆Ω
-//			SPI_CLK_Delay();			//µÕµÁ∆Ω±£≥÷
-//			
-//					//…œ…˝—ÿ£¨ ˝æ›¥´ ‰∏¯¥”ª˙
-//		
-//			if( Read_SPI_MISO()	)	//»Ù∂¡»°µΩ ˝æ›Œ™1
-//				{	dat= dat|0x01;}		//¥Ê¥
-//				SPI_CLK_1();	
-//		}	
-//			
-//		
-//		return	dat;						//∑µªÿΩ” ’µΩµƒΩ·π˚ ˝æ›
-//}
+
 u8 SPI_Read_One_Byte(void)
 {
-    SPI_CS_0();
-    SPI_CLK_Delay();
+    //SPI_CS_0();
+    //SPI_CLK_Delay();
 		u8 i=0;
 		u8 dat=0;
 
 		for(i=0;i<8;i++)
 		{
-			dat=dat<<1;						// ˝æ›ª∫≥Â±‰¡ø◊Û“∆£¨“‘◊º±∏Ω” ‹œ¬“ªbit ˝æ›
-			SPI_CLK_1();					//≥ı º◊¥Ã¨æ˘Œ™∏ﬂµÁ∆Ω
+			dat=dat<<1;						
+			SPI_CLK_1();					
 			SPI_CLK_Delay();
 			
-			SPI_CLK_0();					//CLKœ¬Ωµ—ÿ£¨¥”ª˙ø…“‘∏ƒ±‰ ˝æ›œﬂ¬∑µÁ∆Ω
-			SPI_CLK_Delay();			//µÕµÁ∆Ω±£≥÷
+			SPI_CLK_0();					
+			SPI_CLK_Delay();			
 			
-			SPI_CLK_1();					//…œ…˝—ÿ£¨ ˝æ›¥´ ‰∏¯¥”ª˙
-			SPI_CLK_Delay();			//◊ˆ—” ±∫Û‘Ÿ∂¡»° ˝æ›
-			if( Read_SPI_MISO()	)	//»Ù∂¡»°µΩ ˝æ›Œ™1
-				{	dat= dat|0x01;}		//¥Ê¥¢
-		}
-			SPI_CLK_Delay();
-        SPI_CS_1();
-		return	dat;						//∑µªÿΩ” ’µΩµƒΩ·π˚ ˝æ›
+			SPI_CLK_1();					
+			SPI_CLK_Delay();			
+			if( Read_SPI_MISO()	)				
+			{	
+				dat= dat|0x01;}		
+			}
+		//SPI_CLK_Delay();
+        //SPI_CS_1();
+		return	dat;						
 }
 
 

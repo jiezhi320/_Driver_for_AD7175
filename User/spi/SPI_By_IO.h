@@ -4,9 +4,9 @@
 
 #include "stm32f10x.h"
 
-extern void delay_us(u32 nus);			//ÉùÃ÷Íâ²¿ÑÓÊ±º¯Êı
+extern void delay_us(u32 nus);			//å£°æ˜å¤–éƒ¨å»¶æ—¶å‡½æ•°
 extern void delay_ms(u16 nms);
-//-------SPI¶Ë¿ÚÔ¤¶¨Òå----------------------------------
+//-------SPIç«¯å£é¢„å®šä¹‰----------------------------------
 #define SPI_CLK_Delay() 		    Delayus(10)
 
 #define	SPI_GPIO_Port_RCC			RCC_APB2Periph_GPIOA
@@ -25,7 +25,7 @@ extern void delay_ms(u16 nms);
 #define SPI_MOSI_GPIO_Port	        GPIOA
 #define SPI_MOSI_GPIO_Pin		    GPIO_Pin_5
 
-//---------------SPI¶Ë¿Ú²Ù×÷Ô¤¶¨Òå-------------------------------------------------
+//---------------SPIç«¯å£æ“ä½œé¢„å®šä¹‰-------------------------------------------------
 #define AD_SYNC_0()					GPIO_ResetBits(AD7175_SYNC_Port, AD7175_SYNC_Pin)
 #define AD_SYNC_1()					GPIO_SetBits(	 AD7175_SYNC_Port, AD7175_SYNC_Pin)
 
@@ -45,7 +45,7 @@ extern void delay_ms(u16 nms);
 
 #define Read_SPI_MISO()			GPIO_ReadInputDataBit(SPI_MISO_GPIO_Port, SPI_MISO_GPIO_Pin)
 
-//------------Çı¶¯º¯ÊıÉùÃ÷--------------------------------------------------------------
+//------------é©±åŠ¨å‡½æ•°å£°æ˜--------------------------------------------------------------
 void SPI_By_IO_GPIO_Init(void);
 void SPI_Send_One_Byte(u8 data);
 u8 SPI_Read_One_Byte(void);

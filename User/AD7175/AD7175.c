@@ -230,39 +230,6 @@ int32_t AD7175_ReadData(int32_t pData)
     return ret;
 }
 
-/***************************************************************************//**
- * @brief Set channels whitch is used
-
- *
- * @return
-*******************************************************************************/
-void AD7175_SetChannels(void)
-{
-//    uint32_t oldRegValue, newRegValue;
-
-//    AD7175_ReadRegister(&AD7175_regs[CH_Map_1]);
-//    oldRegValue = AD7175_regs[CH_Map_1].value;
-////    newRegValue = ((oldRegValue | CH_MAP_REG_SETUP(1)) | CH_MAP_REG_AINPOS(1));
-//    newRegValue = oldRegValue | 0x8001;
-//    AD7175_regs[CH_Map_1].value = newRegValue;
-//    AD7175_WriteRegister(AD7175_regs[CH_Map_1]);
-//    
-//    AD7175_ReadRegister(&AD7175_regs[CH_Map_2]);
-//    oldRegValue = AD7175_regs[CH_Map_2].value;
-////    newRegValue = ((oldRegValue | CH_MAP_REG_SETUP(1)) | CH_MAP_REG_AINPOS(1));
-//    newRegValue = oldRegValue | 0x8001;
-//    AD7175_regs[CH_Map_2].value = newRegValue;
-//    AD7175_WriteRegister(AD7175_regs[CH_Map_2]);
-    
-    
-    unsigned long channelValue = CH_MAP_REG_AINPOS(1) | CH_MAP_REG_AINNEG(2);
-    AD7175_WriteRegister(AD7175_regs[CH_Map_1]);
-    AD7175_WriteRegister(AD7175_regs[CH_Map_2]);
-    channelValue = AD7175_regs[CH_Map_3].value & CH_MAP_REG_CHEN;
-    AD7175_WriteRegister(AD7175_regs[CH_Map_3]);
-    AD7175_WriteRegister(AD7175_regs[CH_Map_4]);
-}
-
 void PolaritySet(uint8_t polarity)
 {
     
