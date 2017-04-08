@@ -140,7 +140,7 @@ void USART1_IRQHandlle(void)
 }
 
 
-/******************printf fuction support***************/
+/******************************printf fuction support 1 ********************************/
 #pragma import(__use_no_semihosting)
 void _sys_exit(int x)
 {
@@ -165,9 +165,63 @@ int fputc(int ch, FILE *f)
 
   return (ch);
 }
-/***********************************************************************/
+/**************************************************************************************/
 
 
 
+/****************************** printf fuction support 2 ********************************/
+/* heard files should include "stdio.h" to support puchar */
+#if 1
+#pragma import(__use_no_semihosting)
 
+struct __FILE
+{
+    int handle;
+};
+FILE __stdout;
+// _sys_exit(int x) return value should be set void
+void _sys_exit(int x)
+{
+    x = x;
+}
+
+int fputc(int ch, FILE *f)
+{
+    if(UartOutPut==UART1)
+    {
+        while(USART_GetFlagStatus(USART1,USART_FLAG_TC)==RESET)
+        {
+            ;
+        }
+        USART_SendData(USART1,(uint8_t)ch);
+    }
+    else if(UartOutPut==UART2)
+    {
+        while(USART_GetFlagStatus(USART2,USART_FLAG_TC)==RESET)
+        {
+            ;
+        }
+        USART_SendData(USART2,(uint8_t)ch);
+    }
+    else if(UartOutPut==UART3)
+    {
+        while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET)
+        {
+            ;
+        }
+
+        SendLen3++;// USART_SendData(USART3,(uint8_t)ch);
+    }
+    else
+    {
+        while(USART_GetFlagStatus(USART1,USART_FLAG_TC)==RESET)
+        {
+            ;
+        }
+        USART_SendData(USART1,(uint8_t)ch);
+    }
+    return ch;
+}
+#endif
+/**************************************************************************************/
 

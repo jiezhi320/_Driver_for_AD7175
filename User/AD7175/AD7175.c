@@ -1,7 +1,5 @@
 
-
-#define AD7175_INIT
-#include "config.h"
+#include "AD7175.h"
 
 /************************ Local variables and types ***************************/
 struct AD7175_state
@@ -9,32 +7,42 @@ struct AD7175_state
     uint8_t useCRC;
 }AD7175_st;
 
+/**************************************************************************//**
+* @brief Initializes the AD7175 
+* @return Returns 0 for success or negative error code.
+******************************************************************************/
+void AD7175_Init(void)
+{
+    uint8_t Flg_Ready;
+    
+    SPI_CS_0();             //??ADC
+    AD7175_Reset();             //ADC??
+    SPI_CLK_Delay();
+    AD7175_ReadRegister(&AD7175_regs[ID_st_reg]);       //??ADC_ID
+    printf("ADC7175_ID=%04X\r\n",AD7175_regs[ID_st_reg].value);
+    Flg_Ready = AD7175_Setup();         //??ADC
+    if(Flg_Ready < 0)
+    {
+        printf("Init_AD7175_Fail");
+    }
+    SPI_CS_1();
+}
 
 /***************************************************************************//** 
 * @brief Resets the device. 
 *******************************************************************************/ 
 void AD7175_Reset(void)
 {
-//	u8 i=0;
-//	SPI_MOSI_1();
-//	for(i=0;i<65;i++)
-//	{
-//		SPI_CLK_1();					//³õÊ¼×´Ì¬Ê±ÖÓÎª¸ßµçÆ½
-//		SPI_CLK_Delay();
-//		SPI_CLK_0();					//³õÊ¼×´Ì¬Ê±ÖÓÎª¸ßµçÆ½
-//		SPI_CLK_Delay();
-//	}
-//	SPI_CLK_1();
-//	SPI_MOSI_0();
+
  	uint8_t wrBuf[10] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}; 
-	SPI_Write(1, wrBuf, 10); 		//·¢ËÍ8¸ö×Ö½Ú0xffÒÔ¸´Î»AD7175
+	SPI_Write(1, wrBuf, 10); 		//send b byte 0xff to reset chip AD7175.
 }
 
 /**************************************************************************//**
 * @brief Initializes the AD7175 
 * @return Returns 0 for success or negative error code.
 ******************************************************************************/
-int32_t AD7175_Setup(void)														//°´ÕÕÍ·ÎÄ¼şÖĞÊı×éÖĞ¶¨Òå³õÊ¼»¯AD7175
+int32_t AD7175_Setup(void)														//æŒ‰ç…§å¤´æ–‡ä»¶ä¸­æ•°ç»„ä¸­å®šä¹‰åˆå§‹åŒ–AD7175
 {
     int32_t ret;
 	
@@ -45,7 +53,7 @@ int32_t AD7175_Setup(void)														//°´ÕÕÍ·ÎÄ¼şÖĞÊı×éÖĞ¶¨Òå³õÊ¼»¯AD7175
     /* Initialize Interface mode register */		
     ret = AD7175_WriteRegister(AD7175_regs[Interface_Mode_Register]);
     if(ret < 0)	return ret;
-    AD7175_st.useCRC = 0;						//ÊÇ·ñÆô¶¯CRCĞ£Ñé
+    AD7175_st.useCRC = 0;						//æ˜¯å¦å¯åŠ¨CRCæ ¡éªŒ
     
     /* Initialize GPIO configuration register */
 		ret = AD7175_WriteRegister(AD7175_regs[GPIOCON]);				
@@ -72,7 +80,7 @@ int32_t AD7175_Setup(void)														//°´ÕÕÍ·ÎÄ¼şÖĞÊı×éÖĞ¶¨Òå³õÊ¼»¯AD7175
     if(ret < 0)	return ret;
 
     /* Initialize Filter Configuration registers */
-    ret = AD7175_WriteRegister(AD7175_regs[Filter_Config_1]);				//ÂË²¨¼Ä´æÆ÷²Ù×÷
+    ret = AD7175_WriteRegister(AD7175_regs[Filter_Config_1]);				//æ»¤æ³¢å¯„å­˜å™¨æ“ä½œ
     if(ret < 0)	return ret;
     ret = AD7175_WriteRegister(AD7175_regs[Filter_Config_2]);
     if(ret < 0)	return ret;
@@ -99,25 +107,25 @@ int32_t AD7175_ReadRegister(st_reg* pReg)
     uint8_t crc       = 0;
 
     /* Build the Command word */
-    buffer[0] = COMM_REG_WEN | COMM_REG_RD | pReg->addr;				//buffer[0]	ÎªCommand ×Ö½Ú	£¬Ğ´²Ù×÷£¬²Ù×÷¶ÔÏóÎªÖ¸¶¨µÄ¼Ä´æÆ÷			
+    buffer[0] = COMM_REG_WEN | COMM_REG_RD | pReg->addr;				    //buffer[0]	ä¸ºCommand å­—èŠ‚	ï¼Œå†™æ“ä½œï¼Œæ“ä½œå¯¹è±¡ä¸ºæŒ‡å®šçš„å¯„å­˜å™¨			
 		
     /* Read data from the device */
-    ret = SPI_Read(AD7175_SLAVE_ID, 														/*	×Ó»ú±àºÅ		*/
-                   buffer, 																			/*	Òª±£´æÊı¾İµÄ»º³åÇøµØÖ·	*/
-                   (AD7175_st.useCRC ? pReg->size + 1 : pReg->size) + 1);			/*	Èç¹ûÆôÓÃCRCĞ£Ñé£¬Ôò×Ö½ÚÊıÁ¿+2£¬·ñÔò+1	*/
+    ret = SPI_Read(AD7175_SLAVE_ID, 										/*	å­æœºç¼–å·		*/
+                   buffer, 																			/*	è¦ä¿å­˜æ•°æ®çš„ç¼“å†²åŒºåœ°å€	*/
+                   (AD7175_st.useCRC ? pReg->size + 1 : pReg->size) + 1);	/*	å¦‚æœå¯ç”¨CRCæ ¡éªŒï¼Œåˆ™å­—èŠ‚æ•°é‡+2ï¼Œå¦åˆ™+1	*/
     if(ret < 0)	return ret;
 
     /* Check the CRC */
-    if(AD7175_st.useCRC)																			/*	Èç¹ûÆôÓÃCRCĞ£ÑéÔò¼ÆËãCRC½á¹û£¬²¢±È¶Ô	*/
+    if(AD7175_st.useCRC)													/*	å¦‚æœå¯ç”¨CRCæ ¡éªŒåˆ™è®¡ç®—CRCç»“æœï¼Œå¹¶æ¯”å¯¹	*/
     { 	crc = AD7175_ComputeCRC(&buffer[1], pReg->size + 1);
         if(crc != AD7175_CRC_CHECK_CODE)	return -1;
     }
 
-    /* Build the result */													/*	¹¹Ôì½á¹ûÊı¾İ	*/
+    /* Build the result */										/*	æ„é€ ç»“æœæ•°æ®	*/
     pReg->value = 0;																				
-    for(i = 1; i < pReg->size + 1; i++)							/*	¸ù¾İÒª·µ»ØµÄÊı¾İ×Ö½ÚÊı£¬¹¹½¨½á¹û	*/
+    for(i = 1; i < pReg->size + 1; i++)							/*	æ ¹æ®è¦è¿”å›çš„æ•°æ®å­—èŠ‚æ•°ï¼Œæ„å»ºç»“æœ	*/
     {		pReg->value <<= 8;													
-        pReg->value += buffer[i];										/*	½ÓÊÕµ½µÄÊı¾İÖĞ£¬buffer[1]	Îª¸ß×Ö½Ú£¬	buffer[3]	ÎªµÍ×Ö½Ú*/
+        pReg->value += buffer[i];								/*	æ¥æ”¶åˆ°çš„æ•°æ®ä¸­ï¼Œbuffer[1]	ä¸ºé«˜å­—èŠ‚ï¼Œ	buffer[3]	ä¸ºä½å­—èŠ‚*/
     }
     return ret;
 }
@@ -128,8 +136,8 @@ int32_t AD7175_ReadRegister(st_reg* pReg)
 * @param reg - Register structure holding info about the register to be written
 * @return Returns 0 for success or negative error code.
 ******************************************************************************/
-int32_t AD7175_WriteRegister(st_reg reg) 								//³¯AD7175Ö¸¶¨µÄ¼Ä´æÆ÷ÖĞĞ´ÈëÊı¾İ
-{																												//¼Ä´æÆ÷ÓÉ²ÎÊı st_reg ´«Èë£¬ÎªÒ»¸öÊı¾İ½á¹¹£¬°üº¬{Addr,Value,Byte_Num}
+int32_t AD7175_WriteRegister(st_reg reg) 			//wirte data to AD7175 register, address reg
+{													//å¯„å­˜å™¨ç”±å‚æ•° st_reg ä¼ å…¥ï¼Œä¸ºä¸€ä¸ªæ•°æ®ç»“æ„ï¼ŒåŒ…å«{Addr,Value,Byte_Num}
     int32_t ret      = 0;
     int32_t regValue = 0;
     uint8_t wrBuf[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -137,26 +145,26 @@ int32_t AD7175_WriteRegister(st_reg reg) 								//³¯AD7175Ö¸¶¨µÄ¼Ä´æÆ÷ÖĞĞ´ÈëÊı¾
     uint8_t crc      = 0;
     
     /* Build the Command word */
-		/*COMMS¼Ä´æÆ÷Éè¶¨£ºbit7=0_Í¨Ñ¶Ê±±ØĞëÎªµÍµçÆ½;	bit6=0_Ğ´²Ù×÷;	bit5_bit0 =	¼Ä´æÆ÷±àºÅµØÖ·*/
-    wrBuf[0] = COMM_REG_WEN | COMM_REG_WR | reg.addr;			//wrBuf[0]	±£´æÃüÁî×Ö½Ú
+		/*COMMSå¯„å­˜å™¨è®¾å®šï¼šbit7=0_é€šè®¯æ—¶å¿…é¡»ä¸ºä½ç”µå¹³;	bit6=0_å†™æ“ä½œ;	bit5_bit0 =	å¯„å­˜å™¨ç¼–å·åœ°å€*/
+    wrBuf[0] = COMM_REG_WEN | COMM_REG_WR | reg.addr;			//wrBuf[0]	ä¿å­˜å‘½ä»¤å­—èŠ‚
 		
     /* Fill the write buffer */
-    regValue = reg.value;																	//°Ñ¼Ä´æÆ÷Êı×éÖĞ£¬¼Ä´æÆ÷µÄ³õÊ¼ÖµĞ´Èë
-    for(i = 0; i < reg.size; i++)													//¸ù¾İ¸Ã¼Ä´æÆ÷Êı¾İ³¤¶È£¬Ñ­»·Ğ´ÈëÊı¾İ
-    {		wrBuf[reg.size - i] = regValue & 0xFF;						//	wrBuf[1]Îª×î¸ß×Ö½Ú		wrBuf[3] Îª×îµÍ×Ö½Ú		
+    regValue = reg.value;									//æŠŠå¯„å­˜å™¨æ•°ç»„ä¸­ï¼Œå¯„å­˜å™¨çš„åˆå§‹å€¼å†™å…¥
+    for(i = 0; i < reg.size; i++)							//æ ¹æ®è¯¥å¯„å­˜å™¨æ•°æ®é•¿åº¦ï¼Œå¾ªç¯å†™å…¥æ•°æ®
+    {		wrBuf[reg.size - i] = regValue & 0xFF;			//	wrBuf[1]ä¸ºæœ€é«˜å­—èŠ‚		wrBuf[3] ä¸ºæœ€ä½å­—èŠ‚		
         regValue >>= 8;
     }
 
     /* Compute the CRC */
-    if(AD7175_st.useCRC)																	//Èç¹ûÊ¹ÄÜÁËCRCĞ£Ñé£¬Ôò°ÑCRCµÄĞ£ÑéÖµÈ¡·´±£´æµ½ wrBuf[4] ÖĞ
+    if(AD7175_st.useCRC)									//å¦‚æœä½¿èƒ½äº†CRCæ ¡éªŒï¼Œåˆ™æŠŠCRCçš„æ ¡éªŒå€¼å–åä¿å­˜åˆ° wrBuf[4] ä¸­
     {		crc = AD7175_ComputeCRC(wrBuf, reg.size+1);
         wrBuf[reg.size + 1] = ~crc;
     }
 		
-    /* Write data to the device */											//·¢ËÍÊı¾İ¸øÆ÷¼ş
-    ret = SPI_Write(AD7175_SLAVE_ID,																		/*	×Ó»úµØÖ·±àºÅ	*/
-                    wrBuf,																							/*	Êı¾İ»º³åÊı×é	*/
-                    AD7175_st.useCRC ? reg.size + 2 : reg.size + 1);		/*	Èç¹ûÊ¹ÄÜÁËCRCĞ£Ñé£¬Ôò·¢ËÍÊı¾İ³¤¶È+2¸ö×Ö½Ú£¬·ñÔò+1	*/
+    /* Write data to the device */							//å‘é€æ•°æ®ç»™å™¨ä»¶
+    ret = SPI_Write(AD7175_SLAVE_ID,						/*	å­æœºåœ°å€ç¼–å·	*/
+                    wrBuf,																							/*	æ•°æ®ç¼“å†²æ•°ç»„	*/
+                    AD7175_st.useCRC ? reg.size + 2 : reg.size + 1);	/*	å¦‚æœä½¿èƒ½äº†CRCæ ¡éªŒï¼Œåˆ™å‘é€æ•°æ®é•¿åº¦+2ä¸ªå­—èŠ‚ï¼Œå¦åˆ™+1	*/
     return ret;
 }
 
@@ -167,7 +175,7 @@ int32_t AD7175_WriteRegister(st_reg reg) 								//³¯AD7175Ö¸¶¨µÄ¼Ä´æÆ÷ÖĞĞ´ÈëÊı¾
 * @param bufSize - Data buffer size in bytes
 * @return Returns the computed CRC
 ******************************************************************************/
-uint8_t AD7175_ComputeCRC(uint8_t* pBuf, uint8_t bufSize)						//¼ÆËãCRCĞ£ÑéÂë
+uint8_t AD7175_ComputeCRC(uint8_t* pBuf, uint8_t bufSize)						//è®¡ç®—CRCæ ¡éªŒç 
 {
     uint8_t i = 0;
     uint8_t crc = 0xFF;
@@ -219,12 +227,12 @@ int32_t AD7175_ReadData(int32_t pData)
     int32_t ret;
 
     /* Read the value of the Status Register */
-    /*	¶ÁÈ¡½á¹û¼Ä´æÆ÷	*/
-    /*	¶ÁÈ¡Íê³É£¬Êı¾İ±£´æÔÚ	½á¹¹ÌåÊı×é¶ÔÓ¦µÄÔªËØÖĞ£¬±£´æµÄÄÚÈİ°üº¬{addr,Value,byte_num}		*/
+    /*	è¯»å–ç»“æœå¯„å­˜å™¨	*/
+    /*	è¯»å–å®Œæˆï¼Œæ•°æ®ä¿å­˜åœ¨	ç»“æ„ä½“æ•°ç»„å¯¹åº”çš„å…ƒç´ ä¸­ï¼Œä¿å­˜çš„å†…å®¹åŒ…å«{addr,Value,byte_num}		*/
     ret = AD7175_ReadRegister(&AD7175_regs[Data_Register]);
 
     /* Get the read result */
-    /*	´Ó½á¹¹ÌåÊı×éÔªËØÖĞ£¬¶ÁÈ¡¶ÔÓ¦µÄ½á¹ûÖµ	*/
+    /*	ä»ç»“æ„ä½“æ•°ç»„å…ƒç´ ä¸­ï¼Œè¯»å–å¯¹åº”çš„ç»“æœå€¼	*/
     pData = AD7175_regs[Data_Register].value;
 
     return ret;
@@ -290,4 +298,5 @@ void PolaritySet(uint8_t polarity)
         newRegValue = oldRegValue | AD7175_regs[Filter_Config_1].value;
         AD7175_WriteRegister(AD7175_regs[Filter_Config_1]);
     }
+
 }

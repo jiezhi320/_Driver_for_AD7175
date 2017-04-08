@@ -91,41 +91,41 @@ enum AD7175_registers
 /*! Array holding the info for the AD7175 registers - address, initial value, size */
 st_reg AD7175_regs[] = 
 {
-	{0x00, 0x00,   		1}, 							//Status_Register
-	{0x01, 0x8000, 		2}, 							//ADC_Mode_Register
-	{0x02, 0x0000, 		2}, 							//Interface_Mode_Register
-	{0X03, 0x0000, 		3}, 							//REGCHECK
-	{0x04, 0x0000, 		3}, 							//Data_Register
-	{0x06, 0x0800, 		2}, 							//GPIOCON
+	{0x00, 0x00,   		1},			//Status_Register
+	{0x01, 0x8000, 		2},			//ADC_Mode_Register
+	{0x02, 0x0000, 		2},			//Interface_Mode_Register
+	{0X03, 0x0000, 		3},			//REGCHECK
+	{0x04, 0x0000, 		3},			//Data_Register
+	{0x06, 0x0800, 		2},			//GPIOCON
 
-	{0x07, 0x0000, 		2}, 							//ID_st_reg
+	{0x07, 0x0000, 		2},			//ID_st_reg
 
-	{0x10, 0x8001, 		2}, 							//CH_Map_1
-	{0x11, 0x0001, 		2}, 							//CH_Map_2
-	{0x12, 0x0001, 		2},								//CH_Map_3
-	{0x13, 0x0001, 		2}, 							//CH_Map_4
+	{0x10, 0x8001, 		2},			//CH_Map_1
+	{0x11, 0x0001, 		2},			//CH_Map_2
+	{0x12, 0x0001, 		2},			//CH_Map_3
+	{0x13, 0x0001, 		2},			//CH_Map_4
 
-	{0x20, 0x0320, 		2}, 							//Setup_Config_1
-	{0x21, 0x0320, 		2}, 							//Setup_Config_2
-	{0x22, 0x0320, 		2}, 							//Setup_Config_3
-	{0x23, 0x0320, 		2}, 							//Setup_Config_4
+	{0x20, 0x0320, 		2},			//Setup_Config_1
+	{0x21, 0x0320, 		2},			//Setup_Config_2
+	{0x22, 0x0320, 		2},			//Setup_Config_3
+	{0x23, 0x0320, 		2},			//Setup_Config_4
 
-	{0x28, 0x0500, 		2}, 							//Filter_Config_1
-	{0x29, 0x0500, 		2}, 							//Filter_Config_2
-	{0x2a, 0x0500, 		2}, 							//Filter_Config_3
-	{0x2b, 0x0500, 		2}, 							//Filter_Config_4
+	{0x28, 0x0500, 		2},			//Filter_Config_1
+	{0x29, 0x0500, 		2},			//Filter_Config_2
+	{0x2a, 0x0500, 		2},			//Filter_Config_3
+	{0x2b, 0x0500, 		2},			//Filter_Config_4
 
-	{0x30, 0x800000, 	3}, 							//Offset_1
-	{0x31, 0x800000, 	3}, 							//Offset_2
-	{0x32, 0x800000, 	3}, 							//Offset_3
-	{0x33, 0x800000, 	3}, 							//Offset_4
+	{0x30, 0x800000, 	3},			//Offset_1
+	{0x31, 0x800000, 	3},			//Offset_2
+	{0x32, 0x800000, 	3},			//Offset_3
+	{0x33, 0x800000, 	3},			//Offset_4
 
-	{0x38, 0x500000, 	3}, 							//Gain_1
-	{0x39, 0x500000, 	3}, 							//Gain_2
-	{0x3a, 0x500000, 	3}, 							//Gain_3
-	{0x3b, 0x500000, 	3}, 							//Gain_4
+	{0x38, 0x500000, 	3},			//Gain_1
+	{0x39, 0x500000, 	3},			//Gain_2
+	{0x3a, 0x500000, 	3},			//Gain_3
+	{0x3b, 0x500000, 	3},			//Gain_4
 	
-	{0xFF, 0x500000, 	1} 								//Communications_Register
+	{0xFF, 0x500000, 	1}				//Communications_Register
 };
 
 #else
